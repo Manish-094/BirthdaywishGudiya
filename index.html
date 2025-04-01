@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy Birthday Slideshow</title>
     <style>
         * {
@@ -19,36 +19,40 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         header {
             text-align: center;
-            padding: 30px 0;
+            padding: 20px 10px;
             width: 100%;
         }
         
         h1 {
             color: #ff4081;
-            font-size: 3rem;
+            font-size: clamp(2rem, 6vw, 3rem);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 10px;
+            word-wrap: break-word;
         }
         
         .subtitle {
             color: #555;
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            padding: 0 10px;
+            line-height: 1.4;
         }
         
         .slideshow-container {
             position: relative;
-            width: 90%;
+            width: 95%;
             max-width: 1000px;
-            height: auto; /* Changed to auto */
-            min-height: 60vh; /* Minimum height */
-            margin: 20px auto;
-            border-radius: 20px;
+            height: auto;
+            min-height: 50vh;
+            margin: 15px auto;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -57,6 +61,7 @@
         .slides {
             display: flex;
             transition: transform 0.5s ease-in-out;
+            width: 100%;
         }
         
         .slide {
@@ -65,27 +70,27 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
         
         .slide img {
             max-width: 100%;
-            max-height: 70vh;
+            max-height: 60vh;
             width: auto;
             height: auto;
-            object-fit: contain; /* Changed to contain */
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
         
         .slide-caption {
-            margin-top: 15px;
+            margin-top: 12px;
             background: rgba(0,0,0,0.5);
             color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 8px 15px;
+            border-radius: 15px;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
         }
         
         .controls {
@@ -95,19 +100,22 @@
             display: flex;
             justify-content: space-between;
             transform: translateY(-50%);
-            padding: 0 20px;
+            padding: 0 15px;
         }
         
         .controls button {
             background: rgba(255,255,255,0.5);
             border: none;
             color: #ff4081;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .controls button:hover {
@@ -117,13 +125,15 @@
         .dots-container {
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            padding: 0 10px;
         }
         
         .dot {
-            width: 15px;
-            height: 15px;
-            margin: 0 5px;
+            width: 12px;
+            height: 12px;
+            margin: 5px;
             background: #ccc;
             border-radius: 50%;
             cursor: pointer;
@@ -140,14 +150,14 @@
             background: #222;
             color: white;
             text-align: center;
-            padding: 20px 0;
-            font-size: 1.1rem;
+            padding: 15px 0;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
         }
         
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: #f00;
             border-radius: 50%;
             animation: fall 5s linear infinite;
@@ -165,27 +175,25 @@
             }
         }
         
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 1.2rem;
+        /* Mobile-specific adjustments */
+        @media (max-width: 480px) {
+            header {
+                padding: 15px 5px;
             }
             
             .slideshow-container {
-                min-height: 50vh;
-            }
-            
-            .controls button {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
+                width: 98%;
+                min-height: 40vh;
             }
             
             .slide img {
                 max-height: 50vh;
+            }
+            
+            .controls button {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
             }
         }
     </style>
@@ -237,10 +245,10 @@
                 const img = document.createElement("img");
                 img.src = url;
                 img.alt = `Birthday memory ${index + 1}`;
+                img.loading = "lazy"; // Lazy loading for better performance
                 img.onload = function() {
-                    // Ensure image fits properly
                     if (this.naturalHeight > this.naturalWidth) {
-                        this.style.maxHeight = "70vh";
+                        this.style.maxHeight = "60vh";
                         this.style.width = "auto";
                     } else {
                         this.style.width = "90%";
@@ -319,15 +327,14 @@
         // Create confetti effect
         function createConfetti() {
             const colors = ['#ff4081', '#00bcd4', '#ffeb3b', '#4caf50', '#9c27b0'];
-            const confettiCount = 100;
+            const confettiCount = 80; // Reduced for mobile performance
             
             for (let i = 0; i < confettiCount; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 
-                // Random properties
                 confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.width = Math.random() * 8 + 4 + 'px';
                 confetti.style.height = confetti.style.width;
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
@@ -337,19 +344,45 @@
             }
         }
 
+        // Touch event handlers for mobile swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        function handleTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }
+        
+        function handleTouchEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide(); // Swipe left
+            } else if (touchEndX > touchStartX + 50) {
+                prevSlide(); // Swipe right
+            }
+        }
+
         // Initialize everything when page loads
         window.addEventListener('load', () => {
             initializeSlideshow();
             createConfetti();
             
             // Pause slideshow when hovering
-            document.querySelector(".slideshow-container").addEventListener("mouseenter", () => {
+            const slideshow = document.querySelector(".slideshow-container");
+            slideshow.addEventListener("mouseenter", () => {
                 clearInterval(slideInterval);
             });
             
-            document.querySelector(".slideshow-container").addEventListener("mouseleave", () => {
+            slideshow.addEventListener("mouseleave", () => {
                 resetInterval();
             });
+            
+            // Add touch events for mobile
+            slideshow.addEventListener('touchstart', handleTouchStart, false);
+            slideshow.addEventListener('touchend', handleTouchEnd, false);
         });
     </script>
 </body>
